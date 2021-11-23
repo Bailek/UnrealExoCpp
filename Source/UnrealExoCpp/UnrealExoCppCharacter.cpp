@@ -60,6 +60,11 @@ void AUnrealExoCppCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	PlayerInputComponent->BindAction("Drag", IE_Pressed, this, &AUnrealExoCppCharacter::PickUp);
+	PlayerInputComponent->BindAction("Drag", IE_Released, this, &AUnrealExoCppCharacter::UnPickUp);
+
+	PlayerInputComponent->BindAction("Fire", IE_Pressed, this, &AUnrealExoCppCharacter::CreateProjectile);
+
 	PlayerInputComponent->BindAxis("MoveForward", this, &AUnrealExoCppCharacter::MoveForward);
 	PlayerInputComponent->BindAxis("MoveRight", this, &AUnrealExoCppCharacter::MoveRight);
 
