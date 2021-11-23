@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "TimerManager.h"
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "UnrealExoCppCharacter.generated.h"
@@ -28,6 +29,31 @@ public:
 	/** Base look up/down rate, in deg/sec. Other scaling may affect final rate. */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Camera)
 	float BaseLookUpRate;
+
+	//Life PLayer
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float HP = 100;
+
+	AActor* DragObject;
+
+	// fonction LifeModifier
+	void LifeModifier(float amout);
+
+	FTimerHandle RespawnHandle;
+
+	FTimerDelegate RespawnDele;
+
+	void Death();
+
+private:
+
+	void Respawn();
+
+	void PickUp();
+
+	void UnPickUp();
+
+	void CreateProjectile();
 
 protected:
 
@@ -58,6 +84,8 @@ protected:
 	/** Handler for when a touch input stops. */
 	void TouchStopped(ETouchIndex::Type FingerIndex, FVector Location);
 
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

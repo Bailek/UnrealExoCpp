@@ -1,10 +1,13 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "UnrealExoCppCharacter.h"
+#include "Projectile.h"
+#include "DrawDebugHelpers.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
+#include "GameFramework/Actor.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -137,4 +140,74 @@ void AUnrealExoCppCharacter::MoveRight(float Value)
 		// add movement in that direction
 		AddMovementInput(Direction, Value);
 	}
+}
+
+// Called when the game starts or when spawned
+void AUnrealExoCppCharacter::BeginPlay()
+{
+	HP = 100;
+	Super::BeginPlay();
+}
+
+void AUnrealExoCppCharacter::LifeModifier(float amout)
+{
+
+	HP = HP + amout;
+
+
+	if (HP <= 0)
+	{
+		Death();
+	}
+
+}
+
+void AUnrealExoCppCharacter::Death()
+{
+	GetMesh()->SetSimulatePhysics(true);
+	GetMesh()->SetCollisionProfileName("Ragdoll");
+	GetController()->UnPossess();
+	//Respawn();
+}
+
+
+void AUnrealExoCppCharacter::Respawn()
+{
+	//GetWorld()->GetTimerManager().SetTimer(RespawnHandle, RespawnDele, 2.0f, false);
+	//APawn* Pawn = GetWorld()->SpawnActor<APawn>(DefaultCharacter, FVector(-770, 370, 226), FRotator(0, 0, 0));
+	//GetController()->Possess(Pawn);
+}
+
+void AUnrealExoCppCharacter::PickUp()
+{
+	FHitResult Hit;
+	FVector Start = GetCapsuleComponent()->GetComponentLocation();
+	FVector End = Start + (GetCapsuleComponent()->GetForwardVector() * 700.f);
+	FCollisionQueryParams CollisionParams;
+
+
+	if (GetWorld()->LineTraceSingleByChannel(Hit, Start, End, ECC_Visibility, CollisionParams))
+	{
+		DrawDebugLine(GetWorld(), Start, End, FColor::Emerald, false, 1);
+		if (Hit.GetComponent()->Mobility == EComponentMobility::Movable)
+		{
+
+			DragObject = Hit.GetActor();
+			DragObject->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(false);
+			DragObject->AttachToComponent(GetCapsuleComponent(), FAttachmentTransformRules::KeepWorldTransform);
+		}
+	}
+
+}
+void AUnrealExoCppCharacter::UnPickUp()
+{
+	if (DragObject)
+	{
+		DragObject->FindComponentByClass<UStaticMeshComponent>()->SetSimulatePhysics(true);
+		DragObject->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
+	}
+}
+void AUnrealExoCppCharacter::CreateProjectile()
+{
+	GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetCapsuleComponent()->GetRelativeLocation(), GetCapsuleComponent()->GetRelativeRotation());
 }
