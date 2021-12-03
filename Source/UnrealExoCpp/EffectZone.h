@@ -25,9 +25,11 @@ public:
 
 	FTimerDelegate TimerDele;
 
+	void checkModifierLife(class AActor* OtherActor);
+
 private:
 
-	void checkModifierLife(class AActor* OtherActor);
+	
 
 	void takeModifierLife(class AActor* OtherActor);
 

@@ -45,6 +45,8 @@ public:
 
 	void Death();
 
+	bool Crouching;
+
 private:
 
 	void Respawn();
@@ -54,6 +56,10 @@ private:
 	void UnPickUp();
 
 	void CreateProjectile();
+
+	void Crounch();
+
+	void UnCrounch();
 
 protected:
 

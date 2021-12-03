@@ -25,3 +25,17 @@ void AMySaveGame::Tick(float DeltaTime)
 
 }
 
+void AMySaveGame::Save() 
+{
+
+}
+
+void AMySaveGame::Load()
+{
+
+}
+
+void AMySaveGame::Restart()
+{
+
+}

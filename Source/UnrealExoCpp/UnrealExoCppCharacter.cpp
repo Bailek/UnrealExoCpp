@@ -60,6 +60,9 @@ void AUnrealExoCppCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
+	PlayerInputComponent->BindAction("Crounch", IE_Pressed, this, &AUnrealExoCppCharacter::Crounch);
+	PlayerInputComponent->BindAction("Crounch", IE_Released, this, &AUnrealExoCppCharacter::UnCrounch);
+
 	PlayerInputComponent->BindAction("Drag", IE_Pressed, this, &AUnrealExoCppCharacter::PickUp);
 	PlayerInputComponent->BindAction("Drag", IE_Released, this, &AUnrealExoCppCharacter::UnPickUp);
 
@@ -147,6 +150,15 @@ void AUnrealExoCppCharacter::MoveRight(float Value)
 	}
 }
 
+void AUnrealExoCppCharacter::Crounch()
+{
+	Crouching = true;
+}
+
+void AUnrealExoCppCharacter::UnCrounch()
+{
+	Crouching = false;
+}
 // Called when the game starts or when spawned
 void AUnrealExoCppCharacter::BeginPlay()
 {
