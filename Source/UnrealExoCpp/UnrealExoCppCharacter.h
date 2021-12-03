@@ -61,6 +61,12 @@ private:
 
 	void UnCrounch();
 
+	UFUNCTION(BlueprintCallable)
+	void SaveGame();
+
+	UFUNCTION(BlueprintCallable)
+	void LoadGame();
+
 protected:
 
 	/** Resets HMD orientation in VR. */

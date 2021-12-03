@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "UnrealExoCppCharacter.h"
+#include "MySaveLoadGame.h"
+#include "MyGameInstance.h"
 #include "Projectile.h"
 #include "DrawDebugHelpers.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
@@ -46,6 +48,7 @@ AUnrealExoCppCharacter::AUnrealExoCppCharacter()
 	FollowCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName); // Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named MyCharacter (to avoid direct content references in C++)
 }
@@ -163,6 +166,12 @@ void AUnrealExoCppCharacter::UnCrounch()
 void AUnrealExoCppCharacter::BeginPlay()
 {
 	HP = 100;
+
+	UMyGameInstance* GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
+	if (GameInstance->Continue == true)
+	{
+		LoadGame();
+	}
 	Super::BeginPlay();
 }
 
@@ -216,6 +225,7 @@ void AUnrealExoCppCharacter::PickUp()
 	}
 
 }
+
 void AUnrealExoCppCharacter::UnPickUp()
 {
 	if (DragObject)
@@ -224,7 +234,32 @@ void AUnrealExoCppCharacter::UnPickUp()
 		DragObject->DetachFromActor(FDetachmentTransformRules::KeepWorldTransform);
 	}
 }
+
 void AUnrealExoCppCharacter::CreateProjectile()
 {
 	GetWorld()->SpawnActor<AProjectile>(AProjectile::StaticClass(), GetCapsuleComponent()->GetRelativeLocation(), GetCapsuleComponent()->GetRelativeRotation());
+}
+
+void AUnrealExoCppCharacter::SaveGame()
+{
+	// create savegame
+	UMySaveLoadGame* SaveGameInstance = Cast<UMySaveLoadGame>(UGameplayStatics::CreateSaveGameObject(UMySaveLoadGame::StaticClass()));
+
+	SaveGameInstance->PlayerLocation = this->GetActorLocation();
+
+	UGameplayStatics::SaveGameToSlot(SaveGameInstance, TEXT("Slot1"), 0);
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Game Saved."));
+}
+
+void AUnrealExoCppCharacter::LoadGame()
+{
+	// create savegame
+	UMySaveLoadGame* SaveGameInstance = Cast<UMySaveLoadGame>(UGameplayStatics::CreateSaveGameObject(UMySaveLoadGame::StaticClass()));
+
+	SaveGameInstance = Cast<UMySaveLoadGame>(UGameplayStatics::LoadGameFromSlot("Slot1", 0));
+
+	this->SetActorLocation(SaveGameInstance->PlayerLocation);
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("Game Loaded."));
 }
