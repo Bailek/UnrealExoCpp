@@ -33,7 +33,14 @@ public:
 	//Life PLayer
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float HP = 100;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float HPMax = 100;
+	//ATK PLayer
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ATK = 10;
+	//DEF PLayer
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DEF = 0;
 	AActor* DragObject;
 
 	// fonction LifeModifier

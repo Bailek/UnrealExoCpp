@@ -165,7 +165,7 @@ void AUnrealExoCppCharacter::UnCrounch()
 // Called when the game starts or when spawned
 void AUnrealExoCppCharacter::BeginPlay()
 {
-	HP = 100;
+	HP = HPMax;
 
 	UMyGameInstance* GameInstance = Cast<UMyGameInstance>(UGameplayStatics::GetGameInstance(GetWorld()));
 	if (GameInstance->Continue == true)
